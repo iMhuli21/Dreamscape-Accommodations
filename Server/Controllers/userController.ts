@@ -1,8 +1,6 @@
 import bcrypt from "bcrypt";
-import { log } from "console";
 import jwt from "jsonwebtoken";
 import { Types } from "mongoose";
-import { upload } from "../server";
 import userModel from "../Models/User";
 import { Response, Request } from "express";
 
@@ -13,34 +11,30 @@ function createToken(id: Types.ObjectId) {
 
 //Create user
 export async function createUser(req: Request, res: Response) {
-  //GRAB ALL THE FIELDS
-  const { email, fullname, password } = req.body;
-  const photo = "default/933-9332131_profile-picture-default-png.png";
-  const favouritePlaces: string[] = [];
-
-  if (!email || !fullname || !password)
-    return res.status(400).json({ error: "All Fields are required" });
-
-  const emailValidator = /([\w\W]+@[\w]{4,5}.[\w]+)/;
-  const passwordValidator = /([\w\W]{8,})/;
-  const isValidEmail = emailValidator.test(email);
-  const isValidPassword = passwordValidator.test(password);
-
-  if (!isValidEmail) return res.status(400).json({ error: "Invalid Email" });
-
-  if (!isValidPassword)
-    return res
-      .status(400)
-      .json({ error: "Invalid Password, It must be more than 8 characters" });
-
   try {
+    //GRAB ALL THE FIELDS
+    const { email, fullname, password } = req.body;
+    const photo = "default/933-9332131_profile-picture-default-png.png";
+
+    if (!email || !fullname || !password)
+      throw new Error("All Fields are required");
+
+    const emailValidator = /([\w\W]+@[\w]{4,5}.[\w]+)/;
+    const passwordValidator = /([\w\W]{8,})/;
+    const isValidEmail = emailValidator.test(email);
+    const isValidPassword = passwordValidator.test(password);
+
+    if (!isValidEmail) throw new Error("Invalid Email");
+
+    if (!isValidPassword)
+      throw new Error("Invalid Password, It must be more than 8 characters");
+
     const salt = await bcrypt.genSalt(10);
 
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const user = await userModel.create({
       email,
-      favouritePlaces,
       fullname,
       password: hashedPassword,
       photo,
@@ -55,31 +49,28 @@ export async function createUser(req: Request, res: Response) {
 
 //Login User
 export async function loginUser(req: Request, res: Response) {
-  const { email, password } = req.body;
-
-  if (!email || !password)
-    return res.status(200).json({ error: "All fields are required" });
-
-  const emailValidator = /([\w\W]+@[\w]{4,5}.[\w]+)/;
-  const passwordValidator = /([\w\W]{8,})/;
-  const isValidEmail = emailValidator.test(email);
-  const isValidPassword = passwordValidator.test(password);
-
-  if (!isValidEmail) return res.status(400).json({ error: "Invalid Email" });
-
-  if (!isValidPassword)
-    return res
-      .status(400)
-      .json({ error: "Invalid Password, It must be more than 8 characters" });
-
   try {
+    const { email, password } = req.body;
+
+    if (!email || !password) throw new Error("All fields are required");
+
+    const emailValidator = /([\w\W]+@[\w]{4,5}.[\w]+)/;
+    const passwordValidator = /([\w\W]{8,})/;
+    const isValidEmail = emailValidator.test(email);
+    const isValidPassword = passwordValidator.test(password);
+
+    if (!isValidEmail) throw new Error("Invalid Email");
+
+    if (!isValidPassword)
+      throw new Error("Invalid Password, It must be more than 8 characters");
+
     const user = await userModel.findOne({ email: email });
 
-    if (!user) return res.status(400).json({ error: "User does not exist" });
+    if (!user) throw new Error("User does not exist");
 
     const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) return res.status(400).json({ error: "Incorrect Password" });
+    if (!isMatch) throw new Error("Incorrect Password");
 
     return res.status(200).json({
       username: user.fullname,
@@ -96,9 +87,11 @@ export async function aboutMe(req: Request, res: Response) {
   try {
     const { _id } = (<any>req).user;
 
-    const user = await userModel.findById(_id);
+    const user = await userModel
+      .findById(_id)
+      .select({ photo: 1, email: 1, fullname: 1 });
 
-    if (!user) return res.status(404).json({ error: "User does not exist" });
+    if (!user) throw new Error("User does not exist");
 
     return res.status(200).json(user);
   } catch (error: any) {

@@ -33,8 +33,7 @@ export async function addNewPlace(req: Request, res: Response) {
       const { _id } = (<any>req).user;
       const files = req.files as Express.Multer.File[];
 
-      if (files.length === 0)
-        return res.status(400).json({ error: "Image Format not allowed" });
+      if (files.length === 0) throw new Error("Image Format not allowed");
 
       //contains the path of the images that have been uploaded of the place
       let uploadedPictures: string[] = [];
@@ -50,7 +49,7 @@ export async function addNewPlace(req: Request, res: Response) {
         !max_guests ||
         !name
       )
-        return res.json({ Errmsg: "All fields are required" });
+        throw new Error("All fields are required");
 
       //just getting the filenames of each file and append the dest of the image
       files.forEach((file) => {
@@ -92,16 +91,14 @@ export async function deletePlace(req: Request, res: Response) {
     const ownsHouse = await placesModel.find({ owner: _id, _id: id });
 
     if (ownsHouse.length === 0)
-      return res.status(401).json({
-        error:
-          "You are not authorized to delete this place. You can only delete places you own.",
-      });
+      throw new Error(
+        "You are not authorized to delete this place. You can only delete places you own."
+      );
 
     //delete the place
     const deleteItem = await placesModel.findByIdAndDelete(id);
 
-    if (!deleteItem)
-      return res.status(404).json({ error: "Place does not exist" });
+    if (!deleteItem) throw new Error("Place does not exist");
 
     return res
       .status(200)
@@ -116,8 +113,7 @@ export async function getPlaces(req: Request, res: Response) {
   try {
     const places = await placesModel.find();
 
-    if (places.length === 0)
-      return res.status(404).json({ error: "No places" });
+    if (places.length === 0) throw new Error("No places");
 
     return res.status(200).json(places);
   } catch (error: any) {
@@ -135,9 +131,7 @@ export async function getPlacesWithCategory(req: Request, res: Response) {
     });
 
     if (searchPlace.length === 0)
-      return res
-        .status(404)
-        .json({ error: `Failed to find places with ${category} category` });
+      throw new Error(`Failed to find places with ${category} category`);
 
     return res.status(200).json(searchPlace);
   } catch (error: any) {
@@ -155,9 +149,7 @@ export async function getPlacesWithRange(req: Request, res: Response) {
     });
 
     if (searchPlace.length === 0)
-      return res
-        .status(404)
-        .json({ error: `Failed to find places with R ${range} price range` });
+      throw new Error(`Failed to find places with R ${range} price range`);
 
     return res.status(200).json(searchPlace);
   } catch (error: any) {
@@ -177,9 +169,7 @@ export async function updatePlace(req: Request, res: Response) {
     const ownsHouse = await placesModel.findOne({ owner: _id, _id: id });
 
     if (!ownsHouse)
-      return res
-        .status(401)
-        .json({ error: "You do not own this house cannot make changes" });
+      throw new Error("You do not own this house cannot make changes");
 
     const updatePlaceInfo = await placesModel.findByIdAndUpdate(id, req.body);
 
@@ -197,7 +187,7 @@ export async function getPlaceById(req: Request, res: Response) {
 
     const place = await placesModel.findById(id);
 
-    if (!place) return res.status(404).json({ error: "Place not found" });
+    if (!place) throw new Error("Place not found");
 
     return res.status(200).json(place);
   } catch (error: any) {
@@ -220,9 +210,7 @@ export async function updatePhotos(req: Request, res: Response) {
     const ownsHouse = await placesModel.findOne({ owner: _id, _id: id });
 
     if (!ownsHouse)
-      return res
-        .status(401)
-        .json({ error: "You do not own this house cannot make changes" });
+      throw new Error("You do not own this house cannot make changes");
 
     const updatePlacePhotos = await placesModel.findByIdAndUpdate(id, {
       photos,
@@ -243,7 +231,7 @@ export async function addPhotos(req: Request, res: Response) {
       const uploadedFiles = req.files as Express.Multer.File[];
 
       if (uploadedFiles.length === 0)
-        return res.status(400).json({ error: "Image Format not allowed" });
+        throw new Error("Image Format not allowed");
 
       //place id
       const { id } = req.params;
@@ -255,9 +243,7 @@ export async function addPhotos(req: Request, res: Response) {
       const ownsHouse = await placesModel.findOne({ owner: _id, _id: id });
 
       if (!ownsHouse)
-        return res
-          .status(401)
-          .json({ error: "You do not own this house cannot make changes" });
+        throw new Error("You do not own this house cannot make changes");
 
       //contains the path of the images that have been uploaded of the place
       let newPictures: string[] = [];
@@ -292,8 +278,7 @@ export async function userPlaces(req: Request, res: Response) {
 
     const myplaces = await placesModel.find({ owner: _id });
 
-    if (myplaces.length === 0)
-      return res.status(200).json({ info: "No places..." });
+    if (myplaces.length === 0) throw new Error("No places...");
 
     return res.status(200).json(myplaces);
   } catch (error: any) {

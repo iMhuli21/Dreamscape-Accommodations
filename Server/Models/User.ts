@@ -11,10 +11,6 @@ const userSchema = new Schema({
     required: true,
     type: String,
   },
-  favouritePlaces: {
-    required: true,
-    type: Array<String>,
-  },
   password: {
     required: true,
     type: String,
