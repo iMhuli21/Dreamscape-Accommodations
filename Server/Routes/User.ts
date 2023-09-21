@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { aboutMe, createUser, loginUser } from "../Controllers/userController";
+import {
+  updatePicture,
+  createUser,
+  loginUser,
+  myPhoto,
+} from "../Controllers/userController";
 import { Auth } from "../Middleware/Auth";
 
 const router = Router();
@@ -10,7 +15,10 @@ router.post("/signup", createUser);
 //Login User Route
 router.post("/login", loginUser);
 
-//Get user Information
-router.get("/about-me", Auth, aboutMe);
+//Update User Profile Photo
+router.put("/update-photo", Auth, updatePicture);
+
+//Get user photo
+router.get("/my-photo", Auth, myPhoto);
 
 export default router;

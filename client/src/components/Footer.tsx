@@ -6,7 +6,7 @@ import { BsHouse, BsSearch, BsPersonCircle } from "react-icons/bs";
 export default function Footer() {
   const { loggedIn, setLoggedIn } = useSignedIn();
   const isLoggedIn = () => {
-    const user_data = JSON.parse(localStorage.getItem("user") || "");
+    const user_data = JSON.parse(localStorage.getItem("user")!);
 
     if (!user_data) return setLoggedIn(false);
 
@@ -15,9 +15,9 @@ export default function Footer() {
 
   useEffect(() => {
     isLoggedIn();
-  }, []);
+  }, [loggedIn]);
   return (
-    <footer className="fixed bottom-0 w-full h-14 font-Inclusive flex items-center justify-evenly border-t text-neutral-700">
+    <footer className="fixed bottom-0 w-full h-14 font-Inclusive flex items-center justify-evenly border-t text-neutral-700 md:hidden bg-white">
       <Link to={"/"} className="flex flex-col items-center p-2">
         <BsHouse className="text-xl" />
         <span>Home</span>

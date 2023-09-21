@@ -23,9 +23,26 @@ export interface CategoriesData {
   _id: string;
 }
 
-export interface ProfileData {
+export interface User {
   email: string;
   fullname: string;
   photo: string;
+  _id: string;
+}
+
+export interface Places {
+  categories: string[];
+  check_in_time: string;
+  check_out_time: string;
+  contact_details: string;
+  cost: number;
+  createdAt: string;
+  location: string;
+  max_guests: number;
+  name: string;
+  owner: string;
+  photos: string[];
+  updatedAt: string;
+  __v: number;
   _id: string;
 }

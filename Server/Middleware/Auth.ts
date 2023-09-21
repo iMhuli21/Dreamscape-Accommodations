@@ -13,21 +13,21 @@ export async function Auth(req: Request, res: Response, next: NextFunction) {
       const payload = jwt.verify(token, process.env.SECRET!);
 
       if (!payload) {
-        res.status(401).json({ Errmsg: "Invalid Token" });
+        throw new Error("Invalid Token");
       } else {
         const id = (<any>payload).id;
 
         const user = await userModel.findOne({ _id: id });
 
-        if (!user) res.status(404).json({ Errmsg: "User does not exist" });
+        if (!user) throw new Error("User does not exist");
 
         (<any>req).user = user;
 
         next();
       }
     } catch (error: any) {
-      const Errmsg = error.message;
-      res.status(400).json({ Errmsg });
+      const msg = error.message;
+      res.status(400).json({ error: msg });
     }
   } else {
     res

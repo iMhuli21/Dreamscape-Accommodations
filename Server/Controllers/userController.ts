@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Types } from "mongoose";
+import { upload } from "../server";
 import userModel from "../Models/User";
 import { Response, Request } from "express";
 
@@ -83,17 +84,40 @@ export async function loginUser(req: Request, res: Response) {
 }
 
 //Get user Information
-export async function aboutMe(req: Request, res: Response) {
+export async function updatePicture(req: Request, res: Response) {
   try {
     const { _id } = (<any>req).user;
 
-    const user = await userModel
-      .findById(_id)
-      .select({ photo: 1, email: 1, fullname: 1 });
+    upload(req, res, async (err) => {
+      //uploads the pictures
+      const uploadedFiles = req.files as Express.Multer.File[];
 
-    if (!user) throw new Error("User does not exist");
+      if (uploadedFiles.length === 0)
+        throw new Error("Image Format not allowed");
 
-    return res.status(200).json(user);
+      //just getting the filename of the file and append the dest of the image
+      let newPhoto = "uploads/" + uploadedFiles[0].filename;
+
+      //we can now update the photos
+      const updateUser = await userModel.findByIdAndUpdate(_id, {
+        photo: newPhoto,
+      });
+
+      return res.status(200).json(updateUser);
+    });
+  } catch (error: any) {
+    const msg = error.message;
+    return res.status(400).json({ error: msg });
+  }
+}
+
+export async function myPhoto(req: Request, res: Response) {
+  try {
+    const { _id } = (<any>req).user;
+
+    const userPhoto = await userModel.findById(_id);
+
+    return res.status(200).json(userPhoto);
   } catch (error: any) {
     const msg = error.message;
     return res.status(400).json({ error: msg });

@@ -56,7 +56,7 @@ app.use(Logger);
 
 //ROUTES
 app.use("/users", userRoutes);
-app.use("/categories", Auth, categoriesRoutes);
+app.use("/categories", categoriesRoutes);
 app.use("/places", placesRoutes);
 
 connect(dbUrl!)

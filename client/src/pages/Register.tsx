@@ -61,7 +61,7 @@ export default function Register() {
               type="email"
               placeholder="Email"
               name="email"
-              className="w-full placeholder-transparent peer p-2 focus:outline-blue-600 focus:outline-2 outline outline-offset-2 outline-1 outline-gray-400 rounded-lg text-sm"
+              className="w-full placeholder-transparent peer p-2 focus:outline-blue-600 focus:outline-2 outline outline-offset-2 outline-1 outline-gray-400 rounded-lg text-sm border-none"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -75,7 +75,7 @@ export default function Register() {
               type="text"
               placeholder="Fullname"
               name="fullname"
-              className="w-full placeholder-transparent peer p-2 focus:outline-blue-600 focus:outline-2 outline outline-offset-2 outline-1 outline-gray-400 rounded-lg text-sm"
+              className="w-full placeholder-transparent peer p-2 focus:outline-blue-600 focus:outline-2 outline outline-offset-2 outline-1 outline-gray-400 rounded-lg text-sm border-none"
               value={fullname}
               onChange={(e) => setFullname(e.target.value)}
             />
@@ -89,7 +89,7 @@ export default function Register() {
               type="password"
               placeholder="Password"
               name="password"
-              className="w-full placeholder-transparent peer p-2 focus:outline-blue-600 focus:outline-2 outline outline-offset-2 outline-1 outline-gray-400 rounded-lg text-sm"
+              className="w-full placeholder-transparent peer p-2 focus:outline-blue-600 focus:outline-2 outline outline-offset-2 outline-1 outline-gray-400 rounded-lg text-sm border-none"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
