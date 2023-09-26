@@ -9,6 +9,9 @@ export default {
 
   theme: {
     extend: {
+      colors: {
+        "light-bg": "rgba(0,0,0,0.2)",
+      },
       fontFamily: {
         Inclusive: ["Inclusive Sans", "sans-serif"],
         poppins: ["Poppins", "sans-serif"],

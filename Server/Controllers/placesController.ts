@@ -2,7 +2,8 @@ import { upload } from "../server";
 import placesModel from "../Models/Places";
 import { Request, Response } from "express";
 
-interface data {
+export interface data {
+  amenities: Array<string>;
   categories: Array<string>;
   cost: Number;
   contact_details: String;
@@ -19,6 +20,7 @@ export async function addNewPlace(req: Request, res: Response) {
     try {
       //getting fields from the form
       const {
+        amenities,
         categories,
         cost,
         contact_details,
@@ -40,6 +42,7 @@ export async function addNewPlace(req: Request, res: Response) {
 
       //checking if the fields are empty
       if (
+        !amenities ||
         !categories ||
         !cost ||
         !contact_details ||
@@ -59,6 +62,7 @@ export async function addNewPlace(req: Request, res: Response) {
 
       //creating the place in mongoDB
       const newPlace = await placesModel.create({
+        amenities,
         categories,
         check_in_time,
         check_out_time,

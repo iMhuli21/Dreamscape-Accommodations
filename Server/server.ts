@@ -3,9 +3,9 @@ import cors from "cors";
 import path from "path";
 import multer from "multer";
 import { log } from "console";
+import { Auth } from "./Middleware/Auth";
 import { connect } from "mongoose";
 import userRoutes from "./Routes/User";
-import { Auth } from "./Middleware/Auth";
 import Logger from "./Middleware/Logger";
 import express, { Request } from "express";
 import placesRoutes from "./Routes/Places";
@@ -38,7 +38,9 @@ const storage = multer.diskStorage({
     file: Express.Multer.File,
     cb: (error: Error | null, filename: string) => void
   ): void {
-    let ext = `img-${Date.now()}${path.extname(file.originalname)}`;
+    let ext = `img-${Date.now()}-${file.originalname}${path.extname(
+      file.originalname
+    )}`;
     cb(null, ext);
   },
 });

@@ -30,7 +30,7 @@ export default function CategoryPlaces() {
       <Header />
       <div className="mt-10">
         <h1 className="text-center text-lg">Places with {category} category</h1>
-        <div className="grid w-full p-2 gap-2 gap-y-5 mt-10 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="relative grid w-full p-2 gap-2 gap-y-5 mt-10 sm:grid-cols-2 lg:grid-cols-3">
           {categoryPlaces.map((item) => (
             <Place key={item._id} place={item} />
           ))}

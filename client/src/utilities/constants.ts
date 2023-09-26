@@ -31,6 +31,7 @@ export interface User {
 }
 
 export interface Places {
+  amenities: string[];
   categories: string[];
   check_in_time: string;
   check_out_time: string;

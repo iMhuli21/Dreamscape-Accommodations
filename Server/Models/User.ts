@@ -1,11 +1,15 @@
-import { model, Schema, Types } from "mongoose";
-import { Response, Request } from "express";
+import { model, Schema } from "mongoose";
+import { data } from "../Controllers/placesController";
 
 const userSchema = new Schema({
   email: {
     required: true,
     type: String,
     unique: true,
+  },
+  favouritePlaces: {
+    required: true,
+    type: Array<data>,
   },
   fullname: {
     required: true,

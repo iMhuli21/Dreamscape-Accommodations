@@ -2,6 +2,10 @@ import { model, Schema, Types } from "mongoose";
 
 const placesSchema = new Schema(
   {
+    amenities: {
+      type: Array<String>,
+      required: true,
+    },
     categories: {
       type: Array<String>,
       required: true,

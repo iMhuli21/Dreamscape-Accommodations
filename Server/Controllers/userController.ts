@@ -4,6 +4,11 @@ import { Types } from "mongoose";
 import { upload } from "../server";
 import userModel from "../Models/User";
 import { Response, Request } from "express";
+import { data } from "./placesController";
+
+interface place {
+  place: data;
+}
 
 //creates token
 function createToken(id: Types.ObjectId) {
@@ -14,6 +19,7 @@ function createToken(id: Types.ObjectId) {
 export async function createUser(req: Request, res: Response) {
   try {
     //GRAB ALL THE FIELDS
+    const favouritePlaces: data[] = [];
     const { email, fullname, password } = req.body;
     const photo = "default/933-9332131_profile-picture-default-png.png";
 
@@ -36,6 +42,7 @@ export async function createUser(req: Request, res: Response) {
 
     const user = await userModel.create({
       email,
+      favouritePlaces,
       fullname,
       password: hashedPassword,
       photo,
@@ -118,6 +125,69 @@ export async function myPhoto(req: Request, res: Response) {
     const userPhoto = await userModel.findById(_id);
 
     return res.status(200).json(userPhoto);
+  } catch (error: any) {
+    const msg = error.message;
+    return res.status(400).json({ error: msg });
+  }
+}
+
+export async function addFavourite(req: Request, res: Response) {
+  try {
+    const { _id } = (<any>req).user;
+
+    const { place }: place = req.body;
+
+    let favourites: data[] = [];
+
+    const prevInfo = await userModel.findById(_id);
+
+    if (prevInfo) {
+      if (prevInfo.favouritePlaces) {
+        //upload the previous places that are still saved
+        for (const key in prevInfo.favouritePlaces) {
+          if (place.name !== (<any>prevInfo).favouritePlaces[key].name) {
+            favourites.push((<any>prevInfo).favouritePlaces[key]);
+          }
+        }
+      }
+
+      favourites.push(place);
+
+      const updateFav = await userModel.findByIdAndUpdate(_id, {
+        favouritePlaces: favourites,
+      });
+
+      return res.status(200).json({ success: "Successfully updated" });
+    }
+  } catch (error: any) {
+    const msg = error.message;
+    return res.status(400).json({ error: msg });
+  }
+}
+
+export async function updateFavourites(req: Request, res: Response) {
+  try {
+    const { _id } = (<any>req).user;
+    const { favouritePlaces } = req.body;
+
+    const updateFav = await userModel.findByIdAndUpdate(_id, {
+      favouritePlaces,
+    });
+
+    return res.status(200).json({ success: "Successfully updated" });
+  } catch (error: any) {
+    const msg = error.message;
+    return res.status(400).json({ error: msg });
+  }
+}
+
+export async function getInfo(req: Request, res: Response) {
+  try {
+    const { _id } = (<any>req).user;
+
+    const user = await userModel.findById(_id).select({ favouritePlaces: 1 });
+
+    return res.status(200).json(user);
   } catch (error: any) {
     const msg = error.message;
     return res.status(400).json({ error: msg });

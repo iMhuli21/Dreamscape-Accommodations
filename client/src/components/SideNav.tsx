@@ -1,4 +1,4 @@
-import { BsHouse, BsSearch } from "react-icons/bs";
+import { BsFillHeartFill, BsHouse, BsSearch } from "react-icons/bs";
 import useSignedIn from "../hooks/useSignedIn";
 import { AiOutlineClose } from "react-icons/ai";
 import useNavContext from "../hooks/useNavContext";
@@ -12,6 +12,7 @@ export default function SideNav() {
   const signOut = () => {
     localStorage.removeItem("user");
     setLoggedIn(false);
+    setShowMenu(false);
     navigate("/");
   };
   return (
@@ -42,6 +43,13 @@ export default function SideNav() {
         >
           <BsHouse />
           <span>Home</span>
+        </Link>
+        <Link
+          to={"/favourites"}
+          className="flex items-center gap-10 w-full px-5 pt-3 hover:text-blue-600 transition-colors duration-100 hover:cursor-pointer"
+        >
+          <BsFillHeartFill />
+          <span>Favourites</span>
         </Link>
         <Link
           to={"/profile"}

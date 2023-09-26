@@ -9,6 +9,7 @@ import { toast_options, userData } from "../utilities/constants";
 
 export default function AddPlace() {
   const navigate = useNavigate();
+  const [amenities, setAmenities] = useState<string[]>([]);
   const [cost, setCost] = useState<string>("");
   const [contact_details, setContactDetails] = useState<string>("");
   const [check_in_time, setCheckInTime] = useState<string>("");
@@ -19,22 +20,44 @@ export default function AddPlace() {
   const [name, setName] = useState<string>("");
   const [files, setFiles] = useState<FileList>();
 
+  const addAmenity = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const amenity = e.target.value;
+
+    if (amenity !== "select-option") {
+      if (amenities.length === 0) {
+        setAmenities([amenity]);
+      } else {
+        const exists = amenities.some((item) => item === amenity);
+
+        if (!exists) {
+          setAmenities((prev) => [...prev, amenity]);
+        }
+      }
+    }
+  };
+
   const addCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const category = e.target.value;
 
-    if (categories.length === 0) {
-      setCategories([category]);
-    } else {
-      const exists = categories.some((item) => item === category);
+    if (category !== "select-option") {
+      if (categories.length === 0) {
+        setCategories([category]);
+      } else {
+        const exists = categories.some((item) => item === category);
 
-      if (!exists) {
-        setCategories((prev) => [...prev, category]);
+        if (!exists) {
+          setCategories((prev) => [...prev, category]);
+        }
       }
     }
   };
 
   const removeCategory = (category: string) => {
     setCategories(categories.filter((item) => item !== category));
+  };
+
+  const removeAmenity = (amenity: string) => {
+    setAmenities(amenities.filter((item) => item !== amenity));
   };
 
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -45,6 +68,10 @@ export default function AddPlace() {
 
     categories.forEach((item) => {
       formData.append("categories", item);
+    });
+
+    amenities.forEach((item) => {
+      formData.append("amenities", item);
     });
 
     for (const obj of files!) {
@@ -103,6 +130,47 @@ export default function AddPlace() {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+          </div>
+
+          <div className="flex flex-col items-start gap-2 w-full">
+            <label htmlFor="amenities" className="text-lg tracking-wide">
+              Amenities
+            </label>
+            <span className="text-sm text-neutral-400 tracking-tighter">
+              Select as many ones that apply to your accommodation.
+            </span>
+            <div className="flex gap-5 w-full flex-wrap mt-3">
+              {amenities.length !== 0 &&
+                amenities.map((amenity) => (
+                  <span
+                    className="amenity"
+                    key={amenity}
+                    onClick={() => removeAmenity(amenity)}
+                  >
+                    {amenity}
+                  </span>
+                ))}
+            </div>
+
+            <select
+              name="amenities"
+              id="amenities"
+              onChange={addAmenity}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-pointer"
+            >
+              <option value={"select-option"}>Select Option</option>
+              <option value={"Air Conditioning"}>Air Conditioning</option>
+              <option value={"Bath Tub"}>Bath Tub</option>
+              <option value={"Balcony"}>Balcony</option>
+              <option value={"Carport"}>Carport</option>
+              <option value={"Gym"}>Gym</option>
+              <option value={"Refridgerator"}>Refridgerator</option>
+              <option value={"Kitchen"}>Kitchen</option>
+              <option value={"Pool"}>Pool</option>
+              <option value="TV">TV</option>
+              <option value="Washer">Washer</option>
+              <option value="WI-FI">WI-FI</option>
+            </select>
           </div>
 
           <div className="flex flex-col items-start gap-2 w-full">
@@ -233,15 +301,16 @@ export default function AddPlace() {
               onChange={addCategory}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-pointer"
             >
-              <option>Amazing Pools</option>
-              <option>Amazing Views</option>
-              <option>BeachFront</option>
-              <option>Bed & Breakfast</option>
-              <option>Cabins</option>
-              <option>Camping</option>
-              <option>Country Side</option>
-              <option>Farms</option>
-              <option>National Parks</option>
+              <option value={"select-option"}>Select Option</option>
+              <option value={"Amazing Pools"}>Amazing Pools</option>
+              <option value={"Amazing Views"}>Amazing Views</option>
+              <option value={"Beachfront"}>Beachfront</option>
+              <option value={"Bed & Breakfasts"}>Bed & Breakfasts</option>
+              <option value={"Cabins"}>Cabins</option>
+              <option value={"Camping"}>Camping</option>
+              <option value={"Countryside"}>Countryside</option>
+              <option value={"Farms"}>Farms</option>
+              <option value={"National Parks"}>National Parks</option>
             </select>
           </div>
 
